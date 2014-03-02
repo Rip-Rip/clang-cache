@@ -33,6 +33,8 @@ void clc_service::jump_to_definition(ATTR_UNUSED clc::rpc::jump_answer& ret,
 void clc_service::add_file(const std::vector<std::string>& argv)
 {
   std::vector<const char*> strargv;
+  char buf[2 * (PATH_MAX + 1)];
+  char path[PATH_MAX + 1];
 
   strargv.reserve(argv.size());
 
@@ -46,9 +48,12 @@ void clc_service::add_file(const std::vector<std::string>& argv)
                                                       0, NULL);
   auto tu_filename = clang_getTranslationUnitSpelling(tu);
   auto filename = clang_getCString(tu_filename);
-  auto it = open_files_.find(filename);
+  getcwd(path, PATH_MAX);
+  snprintf(buf, 2 * (PATH_MAX + 1), "%s/%s", path, filename);
+  realpath(buf, path);
+  auto it = open_files_.find(path);
   if (it == open_files_.end()) {
-    open_files_[filename] = tu;
+    open_files_[path] = tu;
   } else {
     clang_disposeTranslationUnit(tu);
     tu = it->second;

@@ -3,7 +3,7 @@ THRIFT_SOURCES	:= src/clc_if.thrift
 DOC_SOURCES	:= doc/clang-cache.1.md
 
 CXX		?= g++
-CXXFLAGS	:= `pkg-config --cflags thrift` -std=c++11 -pedantic -Wall -Wextra -Werror -I$(dir $(lastword $(MAKEFILE_LIST)))src -Isrc -g
+CXXFLAGS	:= `pkg-config --cflags thrift` -std=c++11 -pedantic -Wall -Wextra -Werror -I$(dir $(lastword $(MAKEFILE_LIST)))src -Isrc -D_XOPEN_SOURCE=500 -g
 LDFLAGS		:= `pkg-config --libs thrift` -lclang
 PREFIX		:= /usr/local
 
